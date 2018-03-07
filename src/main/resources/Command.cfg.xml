@@ -1,0 +1,19 @@
+<?xml version = "1.0" encoding="UTF-8" standalone="yes"?>
+<commands>
+
+    <command>
+        <command-name>sax</command-name>
+        <command-class>by.tc.jwd.task5.meleschenya.controller.command.SAXParseCommand</command-class>
+    </command>
+
+    <command>
+        <command-name>dom</command-name>
+        <command-class>by.tc.jwd.task5.meleschenya.controller.command.DOMParseCommand</command-class>
+    </command>
+
+    <command>
+        <command-name>stax</command-name>
+        <command-class>by.tc.jwd.task5.meleschenya.controller.command.StAXParseCommand</command-class>
+    </command>
+
+</commands>

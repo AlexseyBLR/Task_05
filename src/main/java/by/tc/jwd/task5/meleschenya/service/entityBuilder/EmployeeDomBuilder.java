@@ -1,0 +1,94 @@
+package by.tc.jwd.task5.meleschenya.service.entityBuilder;
+
+import by.tc.jwd.task5.meleschenya.entity.model.Employee;
+import by.tc.jwd.task5.meleschenya.entity.model.Project;
+import by.tc.jwd.task5.meleschenya.service.impl.PropertyLoaderImpl;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static by.tc.jwd.task5.meleschenya.service.entityBuilder.ParserConstants.Tag;
+public class EmployeeDomBuilder {
+
+    private Document document;
+    private Employee employee;
+    private List<Employee> employeeList = new ArrayList<>();
+    private Project project;
+
+
+    public EmployeeDomBuilder(Document document){
+        this.document = document;
+    }
+    public List<Employee> getEmployeeList(){
+
+        NodeList node1 = document.getElementsByTagName(PropertyLoaderImpl.getConstant(Tag.EMPLOYEE_TAG.name()));
+        for(int i = 0; i < node1.getLength(); i ++ ){
+            Node node = node1.item(i);
+            employee = new Employee();
+            buildEmployee(node);
+            employeeList.add(employee);
+            employee = null;
+        }
+        return employeeList;
+    }
+
+
+    private Employee buildEmployee(Node root) {
+        NodeList nodeList = root.getChildNodes();
+
+        for(int i = 0; i < nodeList.getLength();i++){
+            Node node = nodeList.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE){
+                Element element = (Element) node;
+                String textContent = element.getTextContent();
+                if(element.getTagName().equalsIgnoreCase(PropertyLoaderImpl.getConstant(Tag.LAST_NAME_TAG.name()))){
+                    employee.setSecondName(textContent);
+                }else if(element.getTagName().equalsIgnoreCase(PropertyLoaderImpl.getConstant(Tag.FIRST_NAME_TAG.name()))){
+                    employee.setFirstName(textContent);
+                }else if(element.getTagName().equalsIgnoreCase(PropertyLoaderImpl.getConstant(Tag.HIRE_DATE_TAG.name()))){
+                    employee.setHireDate(textContent);
+                }else if(element.getTagName().equalsIgnoreCase(PropertyLoaderImpl.getConstant(Tag.PROJECT_NAME_TAG.name()))){
+                    project = new Project();
+                    buildProject(node);
+                    employee.getProjects().add(project);
+                    project = null;
+                }
+            }
+
+            buildEmployee(node);
+        }
+        return employee;
+    }
+
+
+    private Project buildProject(Node root ) {
+
+        NodeList nodeList = root.getChildNodes();
+        for(int i = 0; i < nodeList.getLength();i++){
+            Node node = nodeList.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE){
+                Element element = (Element)node;
+                String elementContent = element.getTextContent();
+                if(element.getTagName().equalsIgnoreCase(PropertyLoaderImpl.getConstant(Tag.PRODUCT_NAME_TAG.name()))){
+                    project.setProductName(elementContent);
+                }else if(element.getTagName().equalsIgnoreCase(PropertyLoaderImpl.getConstant(Tag.PRICE_NAME_TAG.name()))){
+                    project.setPrice(elementContent);
+                }else if(element.getTagName().equalsIgnoreCase(PropertyLoaderImpl.getConstant(Tag.ID_NAME_TAG.name()))){
+                    project.setId(Integer.parseInt(elementContent));
+                }
+            }
+            buildProject(node);
+        }
+        return project;
+    }
+
+
+
+
+
+
+}
